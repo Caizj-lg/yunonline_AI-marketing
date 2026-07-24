@@ -9,6 +9,11 @@ export type EvidenceFilters = Partial<{
   advantage: string;
 }>;
 
+export function getPaginationItems(totalPages: number): Array<number | "ellipsis"> {
+  if (totalPages <= 6) return Array.from({ length: totalPages }, (_, index) => index + 1);
+  return [1, 2, 3, "ellipsis", totalPages - 2, totalPages - 1, totalPages];
+}
+
 export function searchEvidence(records: DemoEvidence[], filters: EvidenceFilters, page: number, pageSize: number) {
   const rows = records.filter((item) =>
     (!filters.platform || filters.platform === "全部平台" || item.platform === filters.platform) &&

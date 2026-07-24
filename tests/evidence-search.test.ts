@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import demoEvidence from "../data/demo-evidence.json";
-import { searchEvidence } from "../lib/evidence-search";
+import { getPaginationItems, searchEvidence } from "../lib/evidence-search";
 
 describe("evidence search", () => {
   it("returns 20 records from the first page", () => {
@@ -20,5 +20,10 @@ describe("evidence search", () => {
     expect(result.page).toBe(5);
     expect(result.rows).toHaveLength(20);
     expect(result.rows.every((row) => row.platform === "豆包")).toBe(true);
+  });
+
+  it("shows only the first and last three pages with an ellipsis", () => {
+    expect(getPaginationItems(20)).toEqual([1, 2, 3, "ellipsis", 18, 19, 20]);
+    expect(getPaginationItems(6)).toEqual([1, 2, 3, 4, 5, 6]);
   });
 });

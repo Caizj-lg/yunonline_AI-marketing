@@ -10,6 +10,7 @@
 .pagination button { min-width: 31px; border: 1px solid #dde2e5; border-radius: 7px; padding: 7px 9px; background: #fff; color: #53606b; font-size: 12px; cursor: pointer; }
 .pagination button.active { border-color: #15231e; background: #15231e; color: #fff; }
 .pagination button:disabled { opacity: .45; cursor: default; }
+.pagination-ellipsis { padding: 0 3px; color: #7b8490; font-size: 15px; letter-spacing: 1px; }
 .empty-records { margin: 0; padding: 40px 10px; color: #747d87; text-align: center; font-size: 14px; }
 .logout { border: 0; background: transparent; color: #9ca7b5; font-size: 11px; padding: 0; cursor: pointer; margin-left: auto; }
 .logout:hover { color: #fff; }
