@@ -4,6 +4,13 @@
 .platform-filters { display: flex; gap: 8px; flex-wrap: wrap; margin: 0 0 14px; }
 .platform-filters button { border: 0; background: #f3f5f4; border-radius: 8px; padding: 9px 10px; font-size: 12px; color: #5c6570; cursor: pointer; }
 .platform-filters .active { background: #15231e; color: white; }
+.filters .search-button { border: 0; border-radius: 8px; padding: 9px 16px; background: #15231e; color: #fff; font-size: 12px; font-weight: 700; cursor: pointer; }
+.pagination { display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 18px 4px 0; color: #6b7280; font-size: 12px; }
+.pagination > div { display: flex; align-items: center; gap: 5px; flex-wrap: wrap; justify-content: flex-end; }
+.pagination button { min-width: 31px; border: 1px solid #dde2e5; border-radius: 7px; padding: 7px 9px; background: #fff; color: #53606b; font-size: 12px; cursor: pointer; }
+.pagination button.active { border-color: #15231e; background: #15231e; color: #fff; }
+.pagination button:disabled { opacity: .45; cursor: default; }
+.empty-records { margin: 0; padding: 40px 10px; color: #747d87; text-align: center; font-size: 14px; }
 .logout { border: 0; background: transparent; color: #9ca7b5; font-size: 11px; padding: 0; cursor: pointer; margin-left: auto; }
 .logout:hover { color: #fff; }
 .login-page { min-height: 100vh; background: linear-gradient(135deg, #effbf5, #f8faf9 52%, #e9f6ef); padding: 34px max(6vw, 26px); }
@@ -14,4 +21,4 @@
 .login-form input { border: 1px solid #dce2df; border-radius: 8px; padding: 12px; outline-color: #159d71; font-weight: 400; }
 .login-form .dark-button { justify-content: center; margin-top: 5px; }
 .demo-hint { font-size: 12px; color: #7a838b; text-align: center; margin: 0; }
-@media (max-width: 850px) { .filters input { width: 100%; } .filters select { max-width: 100%; } }
+@media (max-width: 850px) { .filters input { width: 100%; } .filters select { max-width: 100%; } .pagination { align-items: flex-start; flex-direction: column; } .pagination > div { justify-content: flex-start; } }
