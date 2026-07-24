@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sentinel — AI 可见性监测平台</title>
+<style>
+/* === CSS Variables — exact design tokens === */
+:root {
+  --bg: #FAFAFA;
+  --bg-white: #FFFFFF;
+  --bg-card: #F8F8F8;
+  --bg-emerald-light: #ECFDF5;
+  --bg-emerald-lighter: #F0FDF4;
+  --dark: #0A0A0B;
+  --text-primary: #0A0A0B;
+  --text-secondary: #52525B;
+  --text-muted: #71717A;
+  --text-muted-dark: #A1A1AA;
+  --text-white: #FFFFFF;
+  --emerald: #10B981;
+  --emerald-dark: #059669;
+  --border-subtle: #E4E4E7;
+  --border-strong: #D4D4D6;
+  --font-display: 'Geist', 'Geist Fallback', system-ui, -apple-system, sans-serif;
+  --font-body: 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  --font-mono: 'Geist Mono', ui-monospace, monospace;
+  --radius-sm: 8px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-full: 100px;
+  --page-width: 1440px;
+}
+
+/* === Reset === */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { width: 100%; height: 100%; overflow: hidden; background: #111; }
+body {
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* === Responsive Scaling Wrapper === */
+.scale-wrapper {
+  position: fixed;
+  top: 0; left: 0;
+  width: 1440px;
+  height: 2685px;
+  transform-origin: top left;
+  overflow: hidden;
+}
+
+/* === Page Container === */
+.page {
+  width: 1440px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  background: var(--bg);
+}
+
+/* === Header === */
+.header {
+  width: 100%;
+  height: 72px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 64px;
+  background: var(--bg);
+}
+.header-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.header-logo-icon {
+  width: 28px; height: 28px;
+  display: flex;
+}
+.header-logo-icon img { width: 100%; height: 100%; }
+.header-logo-text {
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+.header-nav {
+  display: flex;
+  align-items: center;
+  gap: 36px;
+}
+.header-nav a {
+  font-family: var(--font-body);
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.header-nav a:hover { color: var(--text-primary); }
+.header-cta-wrap {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+.header-login {
+  font-family: var(--font-body);
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  text-decoration: none;
+}
+.header-cta-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 20px;
+  background: var(--dark);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-white);
+  text-decoration: none;
+  transition: opacity 0.2s;
+}
+.header-cta-btn:hover { opacity: 0.85; }
+
+/* === Hero Section === */
+.hero {
+  width: 100%;
+  height: 720px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 60px 64px;
+  gap: 48px;
+  background: var(--bg);
+}
+.hero-left {
+  width: 660px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  flex-shrink: 0;
+}
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  background: var(--bg-emerald-light);
+  border-radius: var(--radius-full);
+  width: fit-content;
+}
+.badge-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--emerald);
+}
+.badge-text {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--emerald-dark);
+}
+.hero-title {
+  font-size: 52px;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 64px;
+  letter-spacing: -1px;
+}
+.hero-sub {
+  font-size: 17px;
+  font-weight: 400;
+  color: var(--text-secondary);
+  line-height: 28px;
+}
+.hero-ctas {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.hero-primary-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 28px;
+  background: var(--dark);
+  border-radius: var(--radius-sm);
+  text-decoration: none;
+  transition: opacity 0.2s;
+}
+.hero-primary-cta:hover { opacity: 0.85; }
+.hero-primary-cta-text {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-white);
+}
+.hero-primary-cta-arrow {
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 400;
+  color: var(--text-white);
+}
+.hero-secondary-cta {
+  display: inline-flex;
+  align-items: center;
+  padding: 14px 28px;
+  background: var(--bg-white);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  text-decoration: none;
+  transition: border-color 0.2s;
+}
+.hero-secondary-cta:hover { border-color: var(--text-primary); }
+.hero-secondary-cta-text {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+.hero-trust {
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--text-muted);
+}
+.hero-right {
+  flex: 1;
+  height: 560px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* === Mockup Card === */
+.mockup-card {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 24px;
+  gap: 20px;
+  background: var(--bg-white);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 8px 32px -8px rgba(0, 0, 0, 0.08);
+}
+.mockup-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.mockup-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+.mockup-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  background: var(--bg-emerald-light);
+  border-radius: var(--radius-full);
+}
+.mockup-status-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--emerald);
+}
+.mockup-status-text {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--emerald-dark);
+}
+.mockup-chart {
+  width: 100%;
+  height: 180px;
+  overflow: hidden;
+}
+.mockup-chart img {
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+}
+.mockup-metrics {
+  display: flex;
+  gap: 12px;
+}
+.mockup-metric {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 14px 16px;
+  gap: 6px;
+  background: var(--bg-card);
+  border-radius: var(--radius-md);
+}
+.mockup-metric-label {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-muted);
+}
+.mockup-metric-value {
+  font-family: var(--font-display);
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+.mockup-metric-delta {
+  font-family: var(--font-display);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--emerald);
+}
+.mockup-platforms {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.mockup-platforms-label {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-muted);
+}
+.mockup-platforms-text {
+  font-family: var(--font-display);
+  font-size: 12px;
+  font-weight: 500;
+  color: #3F3F46;
+}
+
+/* === Features Section === */
+.features {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 80px 64px;
+  gap: 48px;
+  background: var(--bg-white);
+}
+.section-header {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.section-eyebrow {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--emerald);
+  letter-spacing: 0.5px;
+}
+.section-title {
+  font-size: 36px;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 44px;
+  letter-spacing: -0.5px;
+}
+.section-desc {
+  font-size: 16px;
+  font-weight: 400;
+  color: var(--text-secondary);
+  line-height: 24px;
+}
+.bento-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.bento-row {
+  display: flex;
+  gap: 16px;
+  height: 300px;
+}
+.bento-card-large {
+  flex: 2;
+  display: flex;
+  flex-direction: column;
+  padding: 28px;
+  gap: 16px;
+  background: var(--bg-white);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+.bento-card-large.emerald-bg {
+  background: var(--bg-emerald-lighter);
+  border-color: #D9F2E0;
+}
+.bento-card-icon-lg {
+  width: 32px; height: 32px;
+  flex-shrink: 0;
+  display: flex;
+}
+.bento-card-icon-lg img { width: 100%; height: 100%; }
+.bento-card-title-lg {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+.bento-card-desc-lg {
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--text-secondary);
+  line-height: 22px;
+  flex: 1;
+}
+.bento-stack {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.bento-card-sm {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 22px;
+  gap: 10px;
+  background: var(--bg-white);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+.bento-card-icon-sm {
+  width: 28px; height: 28px;
+  flex-shrink: 0;
+  display: flex;
+}
+.bento-card-icon-sm img { width: 100%; height: 100%; }
+.bento-card-title-sm {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+.bento-card-desc-sm {
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--text-muted);
+  line-height: 20px;
+}
+
+/* === Stats Section === */
+.stats {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 64px;
+  gap: 40px;
+  background: var(--bg);
+}
+.stats-title {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 36px;
+  text-align: center;
+}
+.stats-row {
+  display: flex;
+  justify-content: space-between;
+}
+.stat-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+.stat-value {
+  font-family: var(--font-display);
+  font-size: 44px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+.stat-label {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
+/* === CTA Section === */
+.cta-section {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 64px;
+  gap: 24px;
+  background: var(--dark);
+}
+.cta-title {
+  font-size: 40px;
+  font-weight: 700;
+  color: var(--text-white);
+  line-height: 52px;
+  letter-spacing: -0.5px;
+  text-align: center;
+}
+.cta-sub {
+  font-size: 17px;
+  font-weight: 400;
+  color: var(--text-muted-dark);
+  line-height: 26px;
+  text-align: center;
+}
+.cta-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 16px 36px;
+  background: var(--text-white);
+  border-radius: var(--radius-sm);
+  text-decoration: none;
+  transition: opacity 0.2s;
+}
+.cta-button:hover { opacity: 0.9; }
+.cta-button-text {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+.cta-button-arrow {
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 400;
+  color: var(--text-primary);
+}
+.cta-trust {
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--text-muted);
+}
+
+/* === Footer === */
+.footer {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 48px 64px;
+  gap: 32px;
+  background: var(--dark);
+}
+.footer-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+.footer-brand {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.footer-logo-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.footer-logo-icon {
+  width: 28px; height: 28px;
+  display: flex;
+}
+.footer-logo-icon img { width: 100%; height: 100%; }
+.footer-logo-text {
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text-white);
+}
+.footer-tagline {
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--text-muted);
+}
+.footer-col {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.footer-col-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--bg);
+}
+.footer-col a {
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--text-muted-dark);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.footer-col a:hover { color: var(--text-white); }
+.footer-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.footer-copyright {
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--text-muted);
+}
+.footer-legal {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+.footer-legal a {
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--text-muted);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.footer-legal a:hover { color: var(--text-white); }
+</style>
+</head>
+<body>
+<div class="scale-wrapper" id="scaleWrapper">
+<div class="page">
+
+<!-- Header -->
+<header class="header">
+  <div class="header-logo">
+    <div class="header-logo-icon"><img src="assets/svg/2_5.svg" alt="Sentinel"></div>
+    <span class="header-logo-text">Sentinel</span>
+  </div>
+  <nav class="header-nav">
+    <a href="#">产品</a>
+    <a href="#">功能</a>
+    <a href="#">价格</a>
+    <a href="#">客户案例</a>
+  </nav>
+  <div class="header-cta-wrap">
+    <a href="#" class="header-login">登录</a>
+    <a href="#" class="header-cta-btn">免费试用</a>
+  </div>
+</header>
+
+<!-- Hero Section -->
+<section class="hero">
+  <div class="hero-left">
+    <div class="hero-badge">
+      <div class="badge-dot"></div>
+      <span class="badge-text">GEO 新时代已来</span>
+    </div>
+    <h1 class="hero-title">看见你的品牌在<br>AI 世界的每一次出现</h1>
+    <p class="hero-sub">Sentinel 实时追踪你的品牌在 ChatGPT、Perplexity、Claude 等 AI 平台上的可见性与趋势变化，让你掌握 AI 搜索时代的品牌话语权。</p>
+    <div class="hero-ctas">
+      <a href="#" class="hero-primary-cta">
+        <span class="hero-primary-cta-text">开始免费监测</span>
+        <span class="hero-primary-cta-arrow">→</span>
+      </a>
+      <a href="#" class="hero-secondary-cta">
+        <span class="hero-secondary-cta-text">预约产品演示</span>
+      </a>
+    </div>
+    <p class="hero-trust">已被 500+ 全球品牌信赖</p>
+  </div>
+  <div class="hero-right">
+    <div class="mockup-card">
+      <div class="mockup-header">
+        <span class="mockup-title">AI 可见性趋势</span>
+        <div class="mockup-status">
+          <div class="mockup-status-dot"></div>
+          <span class="mockup-status-text">实时监测</span>
+        </div>
+      </div>
+      <div class="mockup-chart">
+        <img src="assets/svg/2_41.svg" alt="AI 可见性趋势图">
+      </div>
+      <div class="mockup-metrics">
+        <div class="mockup-metric">
+          <span class="mockup-metric-label">可见性指数</span>
+          <span class="mockup-metric-value">87.3</span>
+          <span class="mockup-metric-delta">↑ 12.4%</span>
+        </div>
+        <div class="mockup-metric">
+          <span class="mockup-metric-label">品牌提及</span>
+          <span class="mockup-metric-value">2,847</span>
+          <span class="mockup-metric-delta">↑ 8.1%</span>
+        </div>
+        <div class="mockup-metric">
+          <span class="mockup-metric-label">平台覆盖</span>
+          <span class="mockup-metric-value">12/15</span>
+          <span class="mockup-metric-delta">↑ +2</span>
+        </div>
+      </div>
+      <div class="mockup-platforms">
+        <span class="mockup-platforms-label">覆盖平台:</span>
+        <span class="mockup-platforms-text">ChatGPT  ·  Perplexity  ·  Claude  ·  Gemini  ·  +8</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Features Bento Grid -->
+<section class="features">
+  <div class="section-header">
+    <span class="section-eyebrow">核心能力</span>
+    <h2 class="section-title">全方位掌控你的 AI 可见性</h2>
+    <p class="section-desc">从实时监测到智能优化，Sentinel 为你提供完整的 GEO 解决方案</p>
+  </div>
+  <div class="bento-grid">
+    <!-- Row 1 -->
+    <div class="bento-row">
+      <div class="bento-card-large">
+        <div class="bento-card-icon-lg"><img src="assets/svg/2_69.svg" alt="AI 可见性监测"></div>
+        <h3 class="bento-card-title-lg">AI 可见性监测</h3>
+        <p class="bento-card-desc-lg">实时追踪你的品牌在 ChatGPT、Perplexity、Claude、Gemini 等 12+ AI 平台上的出现频率、提及方式和情感倾向，第一时间掌握品牌在 AI 世界中的存在感。</p>
+      </div>
+      <div class="bento-stack">
+        <div class="bento-card-sm">
+          <div class="bento-card-icon-sm"><img src="assets/svg/2_77.svg" alt="趋势变化追踪"></div>
+          <h3 class="bento-card-title-sm">趋势变化追踪</h3>
+          <p class="bento-card-desc-sm">可视化展示品牌 AI 可见性趋势变化</p>
+        </div>
+        <div class="bento-card-sm">
+          <div class="bento-card-icon-sm"><img src="assets/svg/2_83.svg" alt="竞品智能对标"></div>
+          <h3 class="bento-card-title-sm">竞品智能对标</h3>
+          <p class="bento-card-desc-sm">自动对比竞品 AI 可见性差距</p>
+        </div>
+      </div>
+    </div>
+    <!-- Row 2 -->
+    <div class="bento-row">
+      <div class="bento-stack">
+        <div class="bento-card-sm">
+          <div class="bento-card-icon-sm"><img src="assets/svg/2_92.svg" alt="多平台覆盖"></div>
+          <h3 class="bento-card-title-sm">多平台覆盖</h3>
+          <p class="bento-card-desc-sm">覆盖 12+ 主流 AI 平台，持续扩展中</p>
+        </div>
+        <div class="bento-card-sm">
+          <div class="bento-card-icon-sm"><img src="assets/svg/2_101.svg" alt="智能告警系统"></div>
+          <h3 class="bento-card-title-sm">智能告警系统</h3>
+          <p class="bento-card-desc-sm">异常波动实时推送告警通知</p>
+        </div>
+      </div>
+      <div class="bento-card-large emerald-bg">
+        <div class="bento-card-icon-lg"><img src="assets/svg/2_108.svg" alt="AI 内容优化建议"></div>
+        <h3 class="bento-card-title-lg">AI 内容优化建议</h3>
+        <p class="bento-card-desc-lg">基于 GEO 数据分析，智能生成内容优化建议，帮助你的品牌在 AI 搜索中获得更多正面曝光和更高排名。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Stats Section -->
+<section class="stats">
+  <h2 class="stats-title">数据驱动的 GEO 决策</h2>
+  <div class="stats-row">
+    <div class="stat-item">
+      <span class="stat-value">500+</span>
+      <span class="stat-label">监测品牌</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-value">12+</span>
+      <span class="stat-label">AI 平台覆盖</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-value">2.4M+</span>
+      <span class="stat-label">月度查询</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-value">98.7%</span>
+      <span class="stat-label">数据准确率</span>
+    </div>
+  </div>
+</section>
+
+<!-- Final CTA Section -->
+<section class="cta-section">
+  <h2 class="cta-title">掌控你的 AI 可见性<br>从今天开始</h2>
+  <p class="cta-sub">免费开始监测你的品牌在 AI 平台上的可见性</p>
+  <a href="#" class="cta-button">
+    <span class="cta-button-text">立即开始</span>
+    <span class="cta-button-arrow">→</span>
+  </a>
+  <p class="cta-trust">无需信用卡  ·  5 分钟完成设置</p>
+</section>
+
+<!-- Footer -->
+<footer class="footer">
+  <div class="footer-top">
+    <div class="footer-brand">
+      <div class="footer-logo-wrap">
+        <div class="footer-logo-icon"><img src="assets/svg/2_139.svg" alt="Sentinel"></div>
+        <span class="footer-logo-text">Sentinel</span>
+      </div>
+      <span class="footer-tagline">你的 AI 可见性指挥中心</span>
+    </div>
+    <div class="footer-col">
+      <span class="footer-col-title">产品</span>
+      <a href="#">功能</a>
+      <a href="#">价格</a>
+    </div>
+    <div class="footer-col">
+      <span class="footer-col-title">公司</span>
+      <a href="#">关于我们</a>
+      <a href="#">博客</a>
+    </div>
+    <div class="footer-col">
+      <span class="footer-col-title">资源</span>
+      <a href="#">文档</a>
+      <a href="#">帮助中心</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span class="footer-copyright">Copyright 2026 Sentinel. 保留所有权利。</span>
+    <div class="footer-legal">
+      <a href="#">隐私政策</a>
+      <a href="#">服务条款</a>
+    </div>
+  </div>
+</footer>
+
+</div><!-- /page -->
+</div><!-- /scale-wrapper -->
+
+<script>
+/* === Responsive scaling: preserve original 1440×2685 canvas, proportional scale === */
+(function() {
+  const wrapper = document.getElementById('scaleWrapper');
+  const WIDTH = 1440;
+  const HEIGHT = 2685;
+
+  function resize() {
+    const scale = Math.min(window.innerWidth / WIDTH, window.innerHeight / HEIGHT);
+    const offsetX = (window.innerWidth - WIDTH * scale) / 2;
+    const offsetY = (window.innerHeight - HEIGHT * scale) / 2;
+    wrapper.style.transform = `scale(${scale})`;
+    wrapper.style.left = offsetX + 'px';
+    wrapper.style.top = offsetY + 'px';
+  }
+
+  window.addEventListener('resize', resize);
+  resize();
+})();
+</script>
+</body>
+</html>

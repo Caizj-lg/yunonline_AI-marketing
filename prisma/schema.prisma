@@ -1,0 +1,11 @@
+generator client { provider = "prisma-client-js" }
+datasource db { provider = "postgresql"; url = env("DATABASE_URL") }
+
+enum Role { PLATFORM_ADMIN OPERATOR CLIENT_ADMIN CLIENT_VIEWER }
+enum BatchStatus { DRAFT PUBLISHED }
+model User { id String @id @default(cuid()) email String @unique name String role Role memberships Membership[] createdAt DateTime @default(now()) }
+model Project { id String @id @default(cuid()) customerName String targetBrand String industry String competitors Json availablePlatforms Json batches Batch[] memberships Membership[] createdAt DateTime @default(now()) }
+model Membership { id String @id @default(cuid()) userId String projectId String user User @relation(fields:[userId],references:[id]) project Project @relation(fields:[projectId],references:[id]) @@unique([userId,projectId]) }
+model Batch { id String @id @default(cuid()) projectId String name String sourceFile String status BatchStatus @default(DRAFT) project Project @relation(fields:[projectId],references:[id]) records EvidenceRecord[] createdAt DateTime @default(now()) publishedAt DateTime? }
+model EvidenceRecord { id String @id @default(cuid()) batchId String anaId Int platform String question String answer String advantageObvious Boolean rankedTopThree Boolean mentionedTarget Boolean mentionedIndustryBrand Boolean positiveKeywords String negativeKeywords String collectedAt DateTime raw Json batch Batch @relation(fields:[batchId],references:[id]) brands BrandMention[] @@unique([batchId,anaId]) }
+model BrandMention { id String @id @default(cuid()) recordId String name String position Int record EvidenceRecord @relation(fields:[recordId],references:[id]) @@unique([recordId,position]) }

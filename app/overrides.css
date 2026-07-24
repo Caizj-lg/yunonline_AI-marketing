@@ -1,0 +1,17 @@
+.filters { margin-bottom: 10px; }
+.filters input, .filters select { border: 1px solid #dde2e5; border-radius: 8px; padding: 9px 11px; background: #fff; color: #4f5964; font-size: 12px; outline-color: #16a374; }
+.filters input { width: 220px; }
+.platform-filters { display: flex; gap: 8px; flex-wrap: wrap; margin: 0 0 14px; }
+.platform-filters button { border: 0; background: #f3f5f4; border-radius: 8px; padding: 9px 10px; font-size: 12px; color: #5c6570; cursor: pointer; }
+.platform-filters .active { background: #15231e; color: white; }
+.logout { border: 0; background: transparent; color: #9ca7b5; font-size: 11px; padding: 0; cursor: pointer; margin-left: auto; }
+.logout:hover { color: #fff; }
+.login-page { min-height: 100vh; background: linear-gradient(135deg, #effbf5, #f8faf9 52%, #e9f6ef); padding: 34px max(6vw, 26px); }
+.login-card { width: min(440px, 100%); margin: 12vh auto; background: #fff; border: 1px solid #e3e9e5; border-radius: 16px; padding: 35px; box-shadow: 0 22px 65px #133f2a16; }
+.login-card h1 { font-size: 29px; letter-spacing: -.04em; margin: 10px 0; }
+.login-form { display: grid; gap: 16px; margin-top: 28px; }
+.login-form label { display: grid; gap: 7px; font-size: 13px; font-weight: 700; color: #4d5761; }
+.login-form input { border: 1px solid #dce2df; border-radius: 8px; padding: 12px; outline-color: #159d71; font-weight: 400; }
+.login-form .dark-button { justify-content: center; margin-top: 5px; }
+.demo-hint { font-size: 12px; color: #7a838b; text-align: center; margin: 0; }
+@media (max-width: 850px) { .filters input { width: 100%; } .filters select { max-width: 100%; } }
