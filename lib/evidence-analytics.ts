@@ -109,6 +109,37 @@ export function getPlatformSummaries(records: readonly EvidenceRecord[]): Platfo
   return [...groups.entries()].map(([platform, platformRecords]) => ({ platform, ...calculateMetrics(platformRecords) })).sort((a, b) => a.platform.localeCompare(b.platform));
 }
 
+export function getBatchChartData(records: readonly EvidenceRecord[]) {
+  return [...getBatchSummaries(records)].reverse().map((batch) => ({
+    name: batch.name,
+    recordCount: batch.recordCount,
+    questionCount: batch.questionCount,
+    platformCount: batch.platformCount,
+    mentionRate: batch.mentionRate,
+    topThreeRate: batch.topThreeRate,
+    advantageRate: batch.advantageRate,
+    firstMentionRate: batch.firstMentionRate,
+    platforms: batch.platforms,
+  }));
+}
+
+export function getPlatformChartData(records: readonly EvidenceRecord[]) {
+  return getPlatformSummaries(records).map((platform) => ({
+    platform: platform.platform,
+    recordCount: platform.recordCount,
+    mentionedCount: platform.mentionedCount,
+    mentionRate: platform.mentionRate,
+    topThreeRate: platform.topThreeRate,
+    advantageRate: platform.advantageRate,
+    firstMentionRate: platform.firstMentionRate,
+    averageMentionPosition: platform.averageMentionPosition,
+  }));
+}
+
+export function getTargetPlatformChartData(records: readonly EvidenceRecord[]) {
+  return getPlatformChartData(records);
+}
+
 export function getBrandCompetition(records: readonly EvidenceRecord[]): BrandSummary[] {
   const groups = new Map<string, { name: string; positions: number[] }>();
   records.forEach((record) => uniqueBrands(record.brands).forEach((brand) => {
@@ -124,6 +155,18 @@ export function getBrandCompetition(records: readonly EvidenceRecord[]): BrandSu
     topThreeCount: positions.filter((position) => position <= 3).length,
     averagePosition: Number((positions.reduce((sum, position) => sum + position, 0) / positions.length).toFixed(1)),
   })).sort((a, b) => b.mentionCount - a.mentionCount || a.averagePosition! - b.averagePosition!);
+}
+
+export function getBrandPositionStackData(records: readonly EvidenceRecord[]) {
+  const groups = new Map<string, { name: string; first: number; topThreeOther: number; afterTopThree: number }>();
+  records.forEach((record) => uniqueBrands(record.brands).forEach((brand) => {
+    const current = groups.get(brand.normalized) ?? { name: brand.displayName, first: 0, topThreeOther: 0, afterTopThree: 0 };
+    if (brand.position === 1) current.first += 1;
+    else if (brand.position <= 3) current.topThreeOther += 1;
+    else current.afterTopThree += 1;
+    groups.set(brand.normalized, current);
+  }));
+  return [...groups.values()].map((brand) => ({ ...brand, total: brand.first + brand.topThreeOther + brand.afterTopThree })).sort((a, b) => b.total - a.total);
 }
 
 export function getRecordsForBatch<T extends EvidenceRecord>(records: readonly T[], batchName: string | null) {

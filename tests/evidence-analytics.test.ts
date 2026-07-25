@@ -3,7 +3,11 @@ import {
   calculateMetrics,
   getBatchSummaries,
   getBrandCompetition,
+  getBrandPositionStackData,
+  getBatchChartData,
   getLatestBatchName,
+  getPlatformChartData,
+  getTargetPlatformChartData,
   getPlatformSummaries,
   normalizeBrandName,
 } from "../lib/evidence-analytics";
@@ -59,5 +63,22 @@ describe("evidence analytics", () => {
 
   it("returns safe empty metrics", () => {
     expect(calculateMetrics([])).toMatchObject({ recordCount: 0, mentionRate: null, averageMentionPosition: null });
+  });
+
+  it("produces chart-ready batch and platform data without inventing missing values", () => {
+    expect(getBatchChartData(records)).toEqual([
+      expect.objectContaining({ name: "2026年5月复查", recordCount: 2, mentionRate: 100, topThreeRate: 50, advantageRate: 50, firstMentionRate: 50 }),
+      expect.objectContaining({ name: "2026年6月复查", recordCount: 1, mentionRate: 0, topThreeRate: 0, advantageRate: 100, firstMentionRate: 0 }),
+    ]);
+    expect(getPlatformChartData(records.filter((record) => record.batchName === "2026年5月复查"))).toEqual([
+      expect.objectContaining({ platform: "DeepSeek", mentionRate: 100, topThreeRate: 0, advantageRate: 0 }),
+      expect.objectContaining({ platform: "豆包", mentionRate: 100, topThreeRate: 100, advantageRate: 100 }),
+    ]);
+    expect(getTargetPlatformChartData(records).find((row) => row.platform === "Kimi")).toMatchObject({ mentionRate: 0, mentionedCount: 0 });
+  });
+
+  it("produces a deduplicated brand position stack for chart rendering", () => {
+    const row = getBrandPositionStackData(records).find((brand) => brand.name === "竞品 B");
+    expect(row).toEqual({ name: "竞品 B", first: 0, topThreeOther: 1, afterTopThree: 0, total: 1 });
   });
 });
