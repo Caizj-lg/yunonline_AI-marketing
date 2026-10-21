@@ -13,8 +13,8 @@ import {
 } from "../lib/evidence-analytics";
 
 const records = [
-  { id: "1", anaId: 1, platform: "豆包", question: "问题 A", batchName: "2026年5月复查", answer: "回答", collectedAt: "2026-05-30 10:00:00", mentionedTarget: true, rankedTopThree: true, advantageObvious: true, mentionedIndustryBrand: true, positiveKeywords: "服务", negativeKeywords: "无", brands: ["竞品 A", "日立"] },
-  { id: "2", anaId: 2, platform: "DeepSeek", question: "问题 B", batchName: "2026年5月复查", answer: "回答", collectedAt: "2026-05-31 10:00:00", mentionedTarget: true, rankedTopThree: false, advantageObvious: false, mentionedIndustryBrand: true, positiveKeywords: "无", negativeKeywords: "无", brands: ["日立电梯", "竞品 B", "竞品 B"] },
+  { id: "1", anaId: 1, platform: "豆包", question: "问题 A", batchName: "2026年5月复查", answer: "回答", collectedAt: "2026-05-30 10:00:00", mentionedTarget: true, rankedTopThree: true, advantageObvious: true, mentionedIndustryBrand: true, positiveKeywords: "服务", negativeKeywords: "无", brands: ["竞品 A", "云帆"] },
+  { id: "2", anaId: 2, platform: "DeepSeek", question: "问题 B", batchName: "2026年5月复查", answer: "回答", collectedAt: "2026-05-31 10:00:00", mentionedTarget: true, rankedTopThree: false, advantageObvious: false, mentionedIndustryBrand: true, positiveKeywords: "无", negativeKeywords: "无", brands: ["云帆电梯", "竞品 B", "竞品 B"] },
   { id: "3", anaId: 3, platform: "Kimi", question: "问题 C", batchName: "2026年6月复查", answer: "回答", collectedAt: "2026-06-30 10:00:00", mentionedTarget: false, rankedTopThree: false, advantageObvious: true, mentionedIndustryBrand: false, positiveKeywords: "无", negativeKeywords: "无", brands: ["竞品 A"] },
 ] as const;
 
@@ -58,7 +58,7 @@ describe("evidence analytics", () => {
     const competitorB = competition.find((brand) => brand.name === "竞品 B");
 
     expect(competitorB).toMatchObject({ mentionCount: 1, firstMentionCount: 0, topThreeCount: 1, averagePosition: 2 });
-    expect(normalizeBrandName(" 日立 ELEVATOR ")).toBe("日立 elevator");
+    expect(normalizeBrandName(" 云帆 ELEVATOR ")).toBe("云帆 elevator");
   });
 
   it("returns safe empty metrics", () => {

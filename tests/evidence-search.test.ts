@@ -7,17 +7,17 @@ describe("evidence search", () => {
     const result = searchEvidence(demoEvidence, {}, 1, 20);
 
     expect(result.rows).toHaveLength(20);
-    expect(result.total).toBe(400);
-    expect(result.totalPages).toBe(20);
+    expect(result.total).toBe(480);
+    expect(result.totalPages).toBe(24);
     expect(result.page).toBe(1);
   });
 
   it("filters submitted conditions and safely clamps pages", () => {
     const result = searchEvidence(demoEvidence, { platform: "豆包" }, 99, 20);
 
-    expect(result.total).toBe(100);
-    expect(result.totalPages).toBe(5);
-    expect(result.page).toBe(5);
+    expect(result.total).toBe(120);
+    expect(result.totalPages).toBe(6);
+    expect(result.page).toBe(6);
     expect(result.rows).toHaveLength(20);
     expect(result.rows.every((row) => row.platform === "豆包")).toBe(true);
   });
@@ -28,11 +28,11 @@ describe("evidence search", () => {
   });
 
   it("restores URL filters and falls back to the latest batch", () => {
-    const params = new URLSearchParams({ batch: "missing", platform: "豆包", brand: "日立" });
+    const params = new URLSearchParams({ batch: "missing", platform: "豆包", brand: "云帆" });
     const filters = getEvidenceFiltersFromParams(params, demoEvidence);
 
-    expect(filters.batch).toBe("260629六月底复查成效采集数据");
+    expect(filters.batch).toBe("2026年6月复查");
     expect(filters.platform).toBe("豆包");
-    expect(filters.brand).toBe("日立");
+    expect(filters.brand).toBe("云帆");
   });
 });

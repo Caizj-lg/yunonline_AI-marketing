@@ -1,4 +1,4 @@
 export const projectConfig = {
-  targetBrand: "日立电梯",
-  targetBrandAliases: ["日立电梯", "日立"],
+  targetBrand: "云帆电梯",
+  targetBrandAliases: ["云帆电梯", "云帆"],
 } as const;
