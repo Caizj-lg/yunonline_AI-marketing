@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "yunqi-geo-dev",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev", "--", "-p", "8062", "-H", "127.0.0.1"],
+      "port": 8062
+    }
+  ]
+}
